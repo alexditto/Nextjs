@@ -1,9 +1,13 @@
 import Layout from '../components/Layout';
 import AddCharacter from '../components/AddCharacter'
 import CharactersComponent from '../components/Characters'
-import { useState }from 'react';
+import { useState } from 'react';
+import Fetch from 'isomorphic-unfetch';
+import Character from '../components/Character';
 
-const Characters = ( ) => {
+
+
+const Characters = (props) => {
     const [charactersList, setCharacters] = useState([
         {
             id: 1,
@@ -52,10 +56,41 @@ const Characters = ( ) => {
     ]);
 
     //Add Character
-    const addChracter = (character) => {
+    const addChracter = (name, type, str, dex, con, wis, int, cha) => {
         const id = Math.floor(Math.random() *100000) +1;
-        const newCharacter = {id, ...character};
-        setCharacters([...charactersList, newCharacter])
+        const newCharacter = {id, ...name};
+        setCharacters([...charactersList, newCharacter]);
+
+        var myHeaders = new Headers();
+        myHeaders.append("Content-Type", "application/json");
+
+        var raw = JSON.stringify(
+            {
+                "name": name.name, 
+                "type": name.type, 
+                "str": parseInt(name.str), 
+                "dex": parseInt(name.dex), 
+                "con": parseInt(name.con), 
+                "wis": parseInt(name.wis), 
+                "int": parseInt(name.int), 
+                "cha": parseInt(name.cha)
+            });
+
+        var requestOptions = {
+        method: 'POST',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+        };
+
+        fetch("http://localhost:5000/charactersheets/add", requestOptions)
+        .then(response => response.text())
+        .then(result => console.log(result))
+        .catch(error => console.log('error', error));
+
+        fetch("http://localhost:5000/charactersheets")
+            .then(res => console.log(res))
+            .catch(error => console.log('error', error));
     }
 
     return(
@@ -63,10 +98,17 @@ const Characters = ( ) => {
             <div>
                 <AddCharacter onAdd = {addChracter} />
                 <h1>Characters</h1>
-                <CharactersComponent charactersList= {charactersList}/>
+                <CharactersComponent charactersList= {props.characters}/>
             </div>
         </Layout>
     )
 };
+
+Characters.getInitialProps = async function() {
+    const res = await fetch("http://localhost:5000/charactersheets");
+    const data = await res.json();
+    console.log(data.body)
+    return {characters:data}
+}
 
 export default Characters

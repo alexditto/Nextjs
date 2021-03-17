@@ -13,7 +13,7 @@ const Layout = (props) =>{
     const theme = createMuiTheme({
         palette: {
           background: {
-            default: "#7fbfbf"
+            default: "#d9d2c6"
           }
         }
       });

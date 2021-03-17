@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import style from '../styles/app.module.css'
 
-
 const AddCharacter = ({ onAdd }) => {
     const [name, setName ] = useState('');
     const [type, setType ] = useState('');
@@ -12,7 +11,6 @@ const AddCharacter = ({ onAdd }) => {
     const [int, setInt ] = useState('10');
     const [cha, setCha ] = useState('10');
 
-
     const onSubmit = (e) => {
         e.preventDefault()
 
@@ -21,7 +19,7 @@ const AddCharacter = ({ onAdd }) => {
             return
         }
 
-        onAdd({ name, type, str, dex, con, wis, int, cha})
+        onAdd({name, type, str, dex, con, wis, int, cha})
         setName('');
         setType('');
         setStr('10');
@@ -31,6 +29,7 @@ const AddCharacter = ({ onAdd }) => {
         setInt('10');
         setCha('10');
     }
+
 
     return (
         <form className='add-form' onSubmit={onSubmit}>
